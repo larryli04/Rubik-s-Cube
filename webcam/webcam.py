@@ -13,6 +13,11 @@ boundaries = {
     "G":((0, 200, 0), (100,200,100)),
 }
 
+visible_cubes = [
+    [[220,160],[265,180],[343,201],[365,172],[411,147]],
+    [[206,203],[251,217],[320,265],[311,301],[314,340]],
+    [[358,341],[355,294],[349,239],[390,209],[427,180]]
+]
 for element in boundaries:
     print(element)
     boundaries[element] = np.array([np.array(boundaries[element][0]), np.array(boundaries[element][1])])
@@ -52,7 +57,7 @@ def transform(color):
 def colorOf(color):
     
     pixel = transform(color)
-    print("final",pixel)
+
     for key in boundaries:
         # print((pixel>=boundaries[key][0]))
         # print((pixel>=boundaries[key][1]))
@@ -70,9 +75,10 @@ while(True):
     
     try:
         pixel = img[y-45][x]
-        print("color",pixel)
+        print(x, y)
         
         print(colorOf(pixel))
+        
         
     except:
         # print("None")
