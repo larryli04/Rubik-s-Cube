@@ -14,13 +14,12 @@ boundaries = {
 }
 
 visible_cubes = [
-    [[220,160],[265,180],[343,201],[365,172],[411,147]],
-    [[206,203],[251,217],[320,265],[311,301],[314,340]],
-    [[358,341],[355,294],[349,239],[390,209],[427,180]]
+    [[220,160],[265,180],[343,201],[365,172],[411,147]], # top left to right
+    [[206,203],[251,217],[320,265],[311,301],[314,340]], # left top to bottom
+    [[358,341],[355,294],[349,239],[390,209],[427,180]]  # right bottom to top
 ]
-for element in boundaries:
-    print(element)
-    boundaries[element] = np.array([np.array(boundaries[element][0]), np.array(boundaries[element][1])])
+
+
 print(boundaries)
 def transform(color):
     output = np.int16(color)
@@ -65,7 +64,7 @@ def colorOf(color):
             return key
     return "bruh"
 
-print(colorOf([150,0,0]))
+
 
 cam = cv2.VideoCapture(1)
 while(True):
