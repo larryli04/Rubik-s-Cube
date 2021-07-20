@@ -48,9 +48,8 @@ boundaries = {
 }
 
 for element in boundaries: # turn all elements in boundaries to numpy array
-    print(element)
     boundaries[element] = np.array([np.array(boundaries[element][0]), np.array(boundaries[element][1])])
-
+arduino = serial.Serial(port='COM4', baudrate=9600, timeout=.1)
 
 visible_cubes = [
     [[220,160],[265,180],[343,201],[365,172],[411,147]], # top left to right
@@ -68,7 +67,7 @@ def visible(face):
 CWISE = 0
 ACWISE = 1
 
-arduino = serial.Serial(port='COM4', baudrate=9600, timeout=.1)
+
 
 location = [
     [[19,22,25,12,15,18],[25,26,27,46,47,48],[27,24,21,34,31,28],[21,20,19,9,8,7]],
@@ -124,36 +123,40 @@ cubelist = [""] * 54 # define cube datatype
 def rotate(face, direction): #rotate a specific face in a direction by serial command to arduino
     # CONVENTIONS
     # face is 0-5 
-    # direction is 0 (clockwise) or 1 (counterclockwise)
+    # direction is 0 (clockwise) or 1 (counterclockwise) ALWAYS CLOCKWISE
     arduino.write(bytes(face, 'utf-8'))
-    arduino.write(bytes(direction, 'utf-8'))
 
-for face in range(3): # 3 faces to turn
-    for rotation in range(4): # 4 turns per face
-        # get a picture of the state
-        
-        ret,frame = vid.read()
-        frame = cv2.resize(frame, (640,480))
-        while(True):
-            cv2.imshow('frame',frame)
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
+def send(message):
+    arduino.write(bytes(message, 'utf-8'))
+def detect():
+    
 
-        # read pixels
-
-        # put them at place
-        for x in range(6):
+    for face in range(3): # 3 faces to turn
+        for rotation in range(4): # 4 turns per face
+            # get a picture of the state
             
-            cubelist[location[face][rotation][x]] = colorOf(visible(face)[x]) # programmatically search for the right pixel to look at
-        # rotate to next
-        rotate(turns[face])
+            ret,frame = vid.read()
+            frame = cv2.resize(frame, (640,480))
+            while(True):
+                cv2.imshow('frame',frame)
+                if cv2.waitKey(1) & 0xFF == ord('q'):
+                    break
 
-middle =  [5, 14, 23, 32, 41, 50]
-for x in range(len(middle)):
-    cubelist[location] = colors[x]
+            # read pixels
 
-print(cubelist)
-cube = "".join(cubelist) # turn the array "cubelist" into string
-print(cube)
+            # put them at place
+            for x in range(6):
+                
+                cubelist[location[face][rotation][x]] = colorOf(visible(face)[x]) # programmatically search for the right pixel to look at
+            # rotate to next
+            rotate(turns[face])
 
-cv2.destroyAllWindows() # cv2 window cleanup
+    middle =  [5, 14, 23, 32, 41, 50]
+    for x in range(len(middle)):
+        cubelist[location] = colors[x]
+
+    print(cubelist)
+    cube = "".join(cubelist) # turn the array "cubelist" into string
+    print(cube)
+
+    cv2.destroyAllWindows() # cv2 window cleanup

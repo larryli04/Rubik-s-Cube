@@ -1,6 +1,7 @@
 import sys
 sys.path.append("C:/Users/Larry/Documents/Code/Rubik's Cube/Code/RubiksCube-TwophaseSolver")
 
+import colordetect as cd
 import solver as sv
 import cv2
 import serial
@@ -16,14 +17,14 @@ import serial
 def toArduino(solution): # gets solution string and returns int to be sent to arduino
     sarray = solution.split(" ")
     sarray = sarray[:-1]
-    print(sarray)
+    
     out_array = 0
     for elem in sarray:
         x = int(elem[1])
         for i in range(x):
             out_array *= 10
             out_array += arduino_conv[elem[0]]
-    print("bitch")
+    print("Output to Arduino:", out_array)
     return out_array
     
 
@@ -55,6 +56,4 @@ a = sv.solve(cubestring, 20, 2)
 print(a)
 
 # convert a to arduino-compatible number and send to arduino
-
-#testcode
-print(toArduino(a))
+cd.send(toArduino(a))
