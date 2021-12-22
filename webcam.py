@@ -1,6 +1,8 @@
 import cv2
 import pyautogui as p
 import numpy as np
+import const
+import func
 
 boundaries = {
     
@@ -15,12 +17,10 @@ boundaries = {
 
 visible_cubes = [
     [[220,160],[265,180],[343,201],[365,172],[411,147]], # top left to right
-    [[206,203],[251,217],[320,265],[311,301],[314,340]], # left top to bottom
+    [[206,203],[251,217],[300,265],[311,301],[314,340]], # left top to bottom
     [[358,341],[355,294],[349,239],[390,209],[427,180]]  # right bottom to top
 ]
 
-
-print(boundaries)
 def transform(color):
     output = np.int16(color)
     
@@ -53,36 +53,26 @@ def transform(color):
     
     return np.array([255,255,255])
 
-def colorOf(color):
-    
-    pixel = transform(color)
-
-    for key in boundaries:
-        # print((pixel>=boundaries[key][0]))
-        # print((pixel>=boundaries[key][1]))
-        if((pixel>=boundaries[key][0]).all() and (pixel<=boundaries[key][1]).all()):
-            return key
-    return "bruh"
-
-
-
-cam = cv2.VideoCapture(1)
-while(True):
-    ret_val, img = cam.read()
-    img = cv2.resize(img, (640,480))
-    x, y = p.position()
-    
-    try:
-        pixel = img[y-45][x]
-        print(x, y)
+if __name__ == "__main__":
+    cam = cv2.VideoCapture(0)
+    while(True):
+        ret_val, img = cam.read()
+        img = cv2.resize(img, (640,480))
+        x, y = p.position()
         
-        print(colorOf(pixel))
+        for i in range(6):
+            cv2.circle(img,(const.visible(2)[i][0],const.visible(2)[i][1]),4,(255,0,0),-1)
         
-        
-    except:
-        # print("None")
-        pass
-    cv2.imshow("", img)
-    if cv2.waitKey(1) == 27:
-        break
-cv2.destroyAllWindows()
+        try:
+            
+            pixel = img[y-30][x-10]
+            print(x, y,"color:", func.colorOf(pixel), pixel)
+            
+            
+        except:
+            # print("None")
+            pass
+        cv2.imshow("", img)
+        if cv2.waitKey(1) == 27:
+            break
+    cv2.destroyAllWindows()
