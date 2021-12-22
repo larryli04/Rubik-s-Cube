@@ -1,8 +1,10 @@
 import numpy as np
 import func
+
+
 import serial
 
-# arduino = serial.Serial(port='COM4', baudrate=9600, timeout=.1)
+arduino = serial.Serial(port='COM3', baudrate=9600, timeout=.1)
 
 boundaries = {
     
@@ -18,44 +20,52 @@ for element in boundaries: # turn all elements in boundaries to numpy array
     boundaries[element] = np.array([np.array(boundaries[element][0]), np.array(boundaries[element][1])])
 
 visible_cubes = [
-    [[220,160],[265,180],[343,201],[365,172],[411,147]], # top left to right
-    [[206,203],[251,217],[320,265],[311,301],[314,340]], # left top to bottom
-    [[358,341],[355,294],[349,239],[390,209],[427,180]]  # right bottom to top
+    [[220,160],[265,180],[330,190],[365,165],[411,125]], # top left to right
+    [[206,203],[251,217],[300,245],[300,295],[300,340]], # left top to bottom
+    [[340,341],[340,294],[349,239],[390,209],[430,175]]  # right bottom to top
 ]
 
 location = [
-    [[19,22,25,12,15,18],[25,26,27,46,47,48],[27,24,21,34,31,28],[21,20,19,9,8,7]],
-    [[19,22,25,12,15,18],[1,4,7,10,11,12],[45,42,39,16,13,10],[46,49,52,18,17,16]],
-    [[7,8,9,19,20,21],[9,6,3,28,29,30],[3,2,1,37,38,39],[1,4,7,10,11,12]]
+    [[19,22,25,39,42,45],[25,26,27,28,29,30],[27,24,21,16,13,10],[21,20,19,9,8,7]],
+    [[19,22,25,39,42,45],[1,4,7,37,38,39],[54,51,48,43,40,37],[28,31,34,45,44,43]],
+    [[7,8,9,19,20,21],[9,6,3,10,11,12],[3,2,1,46,47,48],[1,4,7,37,38,39]]
+]
+
+lastThree = [
+    [49,52,15,18],
+    [17,18,33,36],
+    [35,36,53,52]
+]
+
+lastVisible = [
+    [[365,165],[411,125],[390,209],[430,175]],
+    [[340,294],[340,341],[300,295],[300,340]],
+    [[340,294],[340,341],[300,295],[300,340]]
 ]
 
 def visible(face):
     if face==0 or face==1:
         list = func.Reverse(visible_cubes[2][:3])+(visible_cubes[1][2:])
-        # func.plot(list)
+        
         return list
     if face == 2:
         list = visible_cubes[0][2:]+(visible_cubes[2][2:])
+        # plot(list)
         return list
 
-colors = ["W", "O", "G", "R", "B", "Y"] # list order of colors
+print(visible(2))
 
-turns = ["F","L","U"]
+colors = ["O", "B", "R", "G", "Y","W"] # list order of colors
 
-arduino_conv = { #adjusted to the wiring
-    "U": 0,
-    "L": 1,
-    "F": 2,
-    "R": 3,
-    "B": 4,
-    "D": 5
-}
+turns = ["F","L","U"] # order of the faces to turn during the color detection BYO
 
 face = {
-    "W":"U",
+    "W":"D",
     "O":"L",
-    "G":"F",
+    "G":"B",
     "R":"R",
-    "B":"B",
-    "Y":"D"
+    "B":"F",
+    "Y":"U"
 }
+
+num_to_face = ["L","F","R","B","U","D"]

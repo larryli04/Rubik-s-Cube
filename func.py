@@ -18,17 +18,17 @@ def plot(list):
     plt.axis("equal")
     plt.show()
 
-def rotate(message):
+def rotate(face):
     # rotate face clockwise
-    const.arduino.write(bytes(message, 'utf-8'))
+    const.arduino.write(bytes(face, 'ascii'))
 
 def transform(color): # color processing to make boundary detection easier and more reliable
     output = np.int16(color)
-    
+    #print(output)
     
     if(output[2]-output[1]>=70):
         if(output[2]-output[0] >= 70): # REDNESS
-            if(output[1]-output[0] > 10): #ORANGE
+            if(output[1]-output[0] > 30): #ORANGE
                     return np.array([10,100,200])
     
     for x in range(len(output)):
@@ -43,10 +43,10 @@ def transform(color): # color processing to make boundary detection easier and m
         return np.array([0,0,255])
     if(output[0]-(output[2]+output[1]) >= 20): # BLUE
         return np.array([255,0,0])
-    if(abs(output[2]-output[1]) < 50): # YELLOW
+    if(abs(output[2]-output[1]) < 40): # YELLOW
         if(output[2]-output[0] > 10):
             return np.array([30,100,100])
-    if(abs(output[1]>(output[0]+output[2]))): #GREEN
+    if(output[1] > (output[2]+output[0])-20): #GREEN
         return (100,200,100)
     if((abs(output[1] - output[0]) < 80) and (abs(output[2] - output[1]) < 60)): # WHITE
         return np.array([255,255,255])
@@ -55,22 +55,24 @@ def transform(color): # color processing to make boundary detection easier and m
 
 def colorOf(color): # compare the pixel read from camera to color definitions
     pixel = transform(color) #color processing
-
+    
     for key in const.boundaries:
+        
         if((pixel>=const.boundaries[key][0]).all() and (pixel<=const.boundaries[key][1]).all()): # complare pixel
             return key
     return "No Color Detected"
 
 def toArduino(solution): # gets solution string and returns int to be sent to arduino
-    sarray = solution.split(" ")
-    sarray = sarray[:-1]
+    sarray = solution.split(" ")[:-1]
     
-    out_array = 0
+    print(sarray)
+    out_array = []
     for elem in sarray:
         x = int(elem[1])
         for i in range(x):
-            out_array *= 10
-            out_array += const.arduino_conv[elem[0]]
+            out_array.append(elem[0])
+    
     print("Output to Arduino:", out_array)
     return out_array
-    
+
+

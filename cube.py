@@ -1,6 +1,7 @@
 from sty import bg, ef, rs
 import time
 import sys
+import const
 
 cube_face = [[1,2,2],[1,2,3],[4,2,3]]
 moves = {
@@ -168,7 +169,31 @@ def scramble(c, m):
             cube = F(cube, moves[face])
         #print_cube(cube)
     return cube
-
+def unpack(cube):
+    out = []
+    ans = ""
+    for y in range(3):
+        for x in range(3):
+            out.append(cube[1][x][2-y])
+    for y in range(3):
+        for x in range(3):
+            out.append(cube[0][x+6][2-y])
+    for y in range(3):
+        for x in range(3):
+            out.append(cube[0][x+3][2-y])
+    for y in range(3):
+        for x in range(3):
+            out.append(cube[2][x][2-y])
+    for y in range(3):
+        for x in range(3):
+            out.append(cube[0][x][2-y])
+    for y in range(3):
+        for x in range(3):
+            out.append(cube[0][x+9][2-y])
+    print(out)
+    for num in out:
+        ans+=const.num_to_face[num]
+    return ans
 if __name__ == "__main__":
     args = str(sys.argv[1])
     opt_scramble = str(sys.argv[2])
@@ -186,9 +211,14 @@ if __name__ == "__main__":
             print_cube(cube)
             x = input()
             cube = scramble(cube, x)
+    elif(args == "--gen_scramble"): # urfdlb
+        cube = scramble(create_cube(), opt_scramble)
+        print(unpack(cube))
+        print_cube(cube)
     else:
-        cube = create_cube()
-        print(cube[1][0])
+        cube = create_test_cube()
+        print(cube)
+        print(unpack(cube))
 
 
 # print_cube(cube)
