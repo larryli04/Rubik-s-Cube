@@ -1,6 +1,8 @@
 # Rubik's-Cube
 Rubik's cube solver
 
+Uses Herbert Kociemba's 2-phase algorithm. Connected to custom cube-manipulating rig fitted with an Arduino Uno and 6 stepper motors and color detecting webcam.
+
 run start.py to start the program
 
 U1, U2, U3, U4, U5, U6, U7, U8, U9, R1, R2,
